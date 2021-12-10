@@ -92,6 +92,9 @@ height:40px;
 const MenuIconContainer = styled.div`
 display:flex;
 align-items:center;
+@media(max-width:565px){
+  display:none;
+}
 `
 const MenuIcon = styled.div`
 margin:0 15px;

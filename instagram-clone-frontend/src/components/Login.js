@@ -127,6 +127,27 @@ const LoginContainer = styled.div`
                 align-items:center;
                 justify-content:center;
                 flex-direction:column;
+@media(max-width:1000px){
+  width:35%;
+}
+@media(max-width:900px){
+  width:40%;
+}
+@media(max-width:750px){
+  width:45%;
+}
+@media(max-width:650px){
+  width:55%;
+}
+@media(max-width:550px){
+  width:65%;
+}
+@media(max-width:450px){
+  width:75%;
+}
+@media(max-width:350px){
+  width:95%;
+}
 
                 `
 const LogoImg = styled.div`

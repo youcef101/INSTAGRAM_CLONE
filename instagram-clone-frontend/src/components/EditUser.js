@@ -91,22 +91,20 @@ function EditUser() {
     return (
         <Container>
             <UserInfosContainer>
+                <ImgContainer>
+                    <Wrap>
+                        <img src={user.profileImg || '/images/person/noProfile.png'} alt='' />
+                    </Wrap>
+                    <form encType="multipart/form-data">
+                        <SelectBtn >
+                            <EditPhotoInput ref={profileImgRef} onChange={handlePhoto} name='file' type="file" />
+                        </SelectBtn>
+                    </form>
+                    <ModifyPhoto onClick={EditPhoto}>
+                        Changer Photo
+                    </ModifyPhoto>
+                </ImgContainer>
                 <UserImgContainer>
-
-                    <ImgContainer>
-                        <Wrap>
-                            <img src={user.profileImg || '/images/person/noProfile.png'} alt='' />
-                        </Wrap>
-                        <form encType="multipart/form-data">
-                            <SelectBtn >
-                                <EditPhotoInput ref={profileImgRef} onChange={handlePhoto} name='file' type="file" />
-                            </SelectBtn>
-                        </form>
-                        <ModifyPhoto onClick={EditPhoto}>
-                            Changer Photo
-                        </ModifyPhoto>
-                    </ImgContainer>
-
                     <InfosContainer>
                         <FirstNameInput ref={firstNameRef} name="firstName" type='text' value={values.firstName} onChange={handleChange} placeholder="Enter your firstName ..." />
                         <LastNameInput ref={lastNameRef} name="lastName" type='text' value={values.lastName} onChange={handleChange} placeholder="Enter your lastName ..." />
@@ -128,29 +126,55 @@ function EditUser() {
 }
 
 export default EditUser
-const Container = styled.div``
+const Container = styled.div`
+overflow-x:hidden;`
 const UserInfosContainer = styled.div`
 width:100vw;
-height:100vh;
+//height:100vh;
 display:flex;
-justify-content:center;
-overflow:hidden;
+align-items:center;
+justify-content:space-evenly;
+overflow-x:hidden;
+@media(max-width:775px){
+flex-direction:column;
+}
 `
 const UserImgContainer = styled.div`
-display:flex;
-justify-content:space-between;
 margin-top:30px;
-height:90vh;
-width:90vw;
+//height:90vh;
+width:60%;
 background-color:white;
 border-radius:4px;
+@media(max-width:775px){
+width:80%;
+}
+@media(max-width:350px){
+width:100%;
+
+}
 `
 const ImgContainer = styled.div`
-width:25%;
-height:100%;
-background-color:#e6e6e6;
+width:20%;
+//height:400px;
+background-color:white;
 display:flex;
 flex-direction:column;
+//margin-right:50px;
+margin-top:30px;
+@media(max-width:775px){
+width:40%;
+margin-top:40px
+}
+@media(max-width:540px){
+width:55%;
+}
+@media(max-width:400px){
+width:65%;
+}
+@media(max-width:350px){
+width:100%;
+
+}
 `
 const Wrap = styled.div`
 cursor:pointer;
@@ -164,8 +188,8 @@ img{
 }
 `
 const InfosContainer = styled.div`
-margin-right:10px;
-width:73%;
+margin-left:5px;
+width:97%;
 height:100%;
 margin-top:35px;
 `

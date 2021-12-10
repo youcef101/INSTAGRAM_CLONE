@@ -168,10 +168,44 @@ place-items:center;
 
 `
 const RegisterContainer = styled.div`
-width:25%;
+width:30%;
 background-color:white;
 border:1px solid #bfbfbf;
-margin:10px ;
+//margin:10px 0;
+@media(max-width:1055px){
+  width:35%;
+}
+@media(max-width:910px){
+  width:40%;
+}
+@media(max-width:790px){
+  width:45%;
+}
+@media(max-width:710px){
+  width:50%;
+}
+@media(max-width:640px){
+  width:55%;
+}
+@media(max-width:580px){
+  width:60%;
+}
+@media(max-width:535px){
+  width:70%;
+}
+@media(max-width:460px){
+  width:85%;
+}
+@media(max-width:390px){
+  width:95%;
+}
+@media(max-width:280px){
+  width:100%;
+}
+
+
+
+
 
 
 

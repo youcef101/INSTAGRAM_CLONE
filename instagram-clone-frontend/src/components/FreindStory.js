@@ -55,8 +55,16 @@ width:40%;
 background-color:white;
 border:1px solid #bfbfbf;
 border-radius:4px;
-margin-bottom:20px;
-
+margin-bottom:2px;
+@media(max-width:1024px){
+   width:50%;
+}
+@media(max-width:965px){
+   width:70%;
+}
+@media(max-width:823px){
+   width:100%;
+}
 `
 const UserStoryContainer = styled.div`
 width:100%;
@@ -65,7 +73,7 @@ align-items:flex-start;
 margin:10px 0;
 `
 const UserContainer = styled.div`
-width:15%;
+//width:15%;
 margin:0 5px;
 display:flex;
 align-items:center;
@@ -84,8 +92,8 @@ const UserImg = styled.div`
 //margin:0 5px;
 img{
     border-radius:50%;
-    width:70px;
-    height:70px;
+    width:50px;
+    height:50px;
     border:1px solid #e6005c;
 }
 // @media(max-width:1000px){

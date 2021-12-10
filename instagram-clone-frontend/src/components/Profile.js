@@ -166,14 +166,23 @@ export default Profile
 const Container = styled.div`
                 height:100vh;
                 //background-color:orange;
+                overflow-x:hidden;
                 `
 const ProfileContainer = styled.div`
                 margin-top:100px;
+                width:100vw;
+                overflow:hidden;
                 `
 const ProfileHeader = styled.div`
-                display:flex;
-                align-items:center;
-                justify-content:center;
+width:100%;
+display:flex;
+align-items:center;
+justify-content:space-evenly;
+@media(max-width:620px){
+text-align:center;
+flex-direction:column;
+
+}
                 `
 const UserImg = styled.div`
                 cursor:pointer;
@@ -186,31 +195,53 @@ const UserImg = styled.div`
                 border:1px solid #bfbfbf;
                 object-fit:cover;
 }
-                `
+`
 const UserGeneralInfo = styled.div`
-                display:flex;
-                flex-direction:column;
-                margin-left:100px;
+width:70%;
+display:flex;
+flex-direction:column;
+//margin-left:100px;
 
-                `
+`
 const TopInfo = styled.div`
-                display:flex;
-                align-items:center;
-                `
+width:100%;
+display:flex;
+align-items:center;
+@media(max-width:620px){
+text-align:center;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+
+}
+
+`
 const UserName = styled.div`
+
                 span{
                     font-size:30px;
                 color: #262626;
 }
+@media(max-width:715px){
+    
+ span{
+ font-size:20px;
+ }
+}
+@media(max-width:630px){
+display:flex;
+align-items:flex-start;
+}
                 `
 const EditProfileBtn = styled.div`
+
 a{
     text-decoration:none;
 }
 display:flex;
 justify-content:center;
                 cursor:pointer;
-                margin-left:20px;
+                margin-left:5px;
                 border:2px solid #bfbfbf;
                 border-radius:4px;
                 width:150px;
@@ -221,17 +252,36 @@ justify-content:center;
                 font-size:14px;
                 color: #262626
 }
+@media(max-width:715px){
+width:120px;
+ span{
+ font-size:12px;
+ }
+}
 
                 `
 const BottomInfo = styled.div`
-                display:flex;
-                align-items:center;
-                margin-top:50px;
-
+display:flex;
+align-items:center;
+margin-top:50px;
+//justify-content:center;
+@media(max-width:345px){
+text-align:center;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
                 `
 const Publication = styled.div`
                 span{
                     font-size:20px;
+}
+@media(max-width:715px){
+span{
+    font-size:15px;
+    display:flex;
+    flex-direction:column;
+}
 }
                 `
 const Abonnee = styled.div`
@@ -242,6 +292,18 @@ const Abonnee = styled.div`
                 color:#262626;
                 font-size:20px;
     
+}
+@media(max-width:715px){
+a{
+    font-size:15px;
+    span{
+        display:flex;
+        flex-direction:column;
+    }
+}
+}
+@media(max-width:345px){
+margin-left:0px;
 }
                 `
 const Abonnement = styled(Abonnee)``
@@ -256,6 +318,9 @@ const MenuActivity = styled(TabList)`
                 align-items:center;
                 justify-content:center;
                 margin-top:15px;
+@media(max-width:530px){
+display:none;
+}
                 `
 const MenuItem = styled(Tab)`
 display:flex;

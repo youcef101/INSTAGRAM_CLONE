@@ -149,11 +149,20 @@ function Posts({ post }) {
 
 export default Posts
 const Container = styled.div`
-margin-bottom:40px;
+margin-bottom:2px;
 width:40%;
 background-color:white;
 border:1px solid #bfbfbf;
 border-radius:4px;
+@media(max-width:1024px){
+   width:50%;
+}
+@media(max-width:965px){
+   width:70%;
+}
+@media(max-width:823px){
+   width:100%;
+}
 `
 const PostContainer = styled.div``
 const PostHeader = styled.div`

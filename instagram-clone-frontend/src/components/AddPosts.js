@@ -105,7 +105,16 @@ width:40%;
 background-color:white;
 border:1px solid #bfbfbf;
 border-radius:4px;
-margin-bottom:20px;
+margin-bottom:2px;
+@media(max-width:1024px){
+   width:50%;
+}
+@media(max-width:965px){
+   width:70%;
+}
+@media(max-width:823px){
+   width:100%;
+}
 `
 const AddPostContainer = styled.div``
 const PostContainer = styled.div`

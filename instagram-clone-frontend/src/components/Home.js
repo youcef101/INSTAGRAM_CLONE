@@ -83,7 +83,7 @@ function Home() {
 export default Home
 const Container = styled.div`
 position:relative;
-margin-top:75px;
+margin-top:65px;
 display:flex;
 align-items:center;
 justify-content:center;

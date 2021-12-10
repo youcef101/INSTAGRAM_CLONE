@@ -64,6 +64,12 @@ top:0;
 right:0;
 margin-top:-1px;
 margin-right:40px;
+@media(max-width:1024px){
+   width:20%;
+}
+@media(max-width:965px){
+   display:none;
+}
 `
 const Follow = styled.div`
 width:100%;
@@ -95,19 +101,39 @@ img{
     height:45px;
     border:1px solid #e6005c;
 }
+@media(max-width:1024px){
+ img{
+    width:38px;
+    height:38px;
+}
+}
 `
-const UserInfo = styled.div``
+const UserInfo = styled.div`
+
+`
 const Username = styled.div`
 min-width:20%;
 
 span{
     font-weight:500;
 }
+@media(max-width:1024px){
+  span{
+    font-weight:200;
+    font-size:11px;
+}
+}
 `
 const Info = styled.div`
 margin-top:-8px;
 span{
     font-size:12px;
+    white-space:nowrap;
+}
+@media(max-width:1024px){
+  span{
+    font-size:10px;
+}
 }
 `
 const FollowBtn = styled.div`
@@ -126,5 +152,12 @@ span{
 }
 &:hover{
     background-color: #0000ff;
+}
+@media(max-width:1024px){
+  width:15%;
+  span{
+    font-weight:200;
+    font-size:11px;
+}
 }
 `

@@ -1,58 +1,56 @@
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components'
-import axiosInstance from '../axios'
+import axiosInstance from '../axios';
+//import axiosInstance from '../axios'
 import { AuthContext } from '../context/AuthContext';
 
-
-function Follows({ followers, getFollowersNotFollowed }) {
-
+function FreindSuggestion({ suggestion_users, getSuggestionUsers }) {
     const { user } = useContext(AuthContext)
-
     const FollowUser = async (id) => {
         const userId = user._id
         try {
             await axiosInstance.post(`/user/${id}/follow`, { userId })
-            getFollowersNotFollowed()
+            getSuggestionUsers()
         } catch (err) {
             console.log(err)
         }
     }
 
-
     return (
         <Container>
-            {followers &&
-                followers.map(follow =>
-                    <FollowContainer key={Math.random()} >
-                        <Follow>
+
+            <FollowContainer >
+                {suggestion_users &&
+                    suggestion_users.map(suggestion =>
+                        <Follow key={Math.random()}>
                             <UserInfoContainer>
-                                <NavLink to={`/profile/${follow.fullName}`}>
+                                <NavLink to={`/profile/${suggestion.fullName}`}>
                                     <UserImg>
-                                        <img src={follow.profileImg || '/images/person/noProfile.png'} alt='' />
+                                        <img src={suggestion.profileImg || '/images/person/noProfile.png'} alt='' />
                                     </UserImg>
                                 </NavLink>
                                 <UserInfo>
                                     <Username>
-                                        <span>{follow.fullName}</span>
+                                        <span>{suggestion.fullName}</span>
                                     </Username>
-                                    <Info>
-                                        <span>Follows you</span>
-                                    </Info>
+
                                 </UserInfo>
                             </UserInfoContainer>
 
-                            <FollowBtn onClick={() => FollowUser(follow._id)} >
+                            <FollowBtn onClick={() => FollowUser(suggestion._id)}  >
                                 <span>Follow</span>
                             </FollowBtn>
                         </Follow>
-                    </FollowContainer>
-                )}
+                    )}
+            </FollowContainer>
+
         </Container>
     )
 }
 
-export default Follows
+export default FreindSuggestion
+
 const Container = styled.div`
 width:25%;
 background-color:white;
@@ -61,7 +59,7 @@ border-radius:4px;
 margin-top:75px;
 position:absolute;
 top:0;
-right:0;
+left:0;
 margin-top:-1px;
 margin-right:40px;
 `
@@ -104,12 +102,7 @@ span{
     font-weight:500;
 }
 `
-const Info = styled.div`
-margin-top:-8px;
-span{
-    font-size:12px;
-}
-`
+
 const FollowBtn = styled.div`
 
 margin-right:10px;
@@ -128,3 +121,4 @@ span{
     background-color: #0000ff;
 }
 `
+

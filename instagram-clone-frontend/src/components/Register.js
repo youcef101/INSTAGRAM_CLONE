@@ -1,31 +1,31 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import axiosInstance from '../axios'
 import { useRef } from 'react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-//import { setSignUp } from '../features/auth/authSlice'
 import SignUpFormValidation from '../FormValidation/SignUpFormValidation'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 
 function Register() {
-    const dispatch = useDispatch();
+    const history = useHistory()
     const [open, setOpen] = React.useState(false);
     const [alert, setAlert] = useState('')
     const [toast, setToast] = useState(false)
     const [errors, setErrors] = useState({})
     const [values, setValues] = useState({
-        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         password_confirm: ''
     })
 
 
-    const usernameRef = useRef();
+    const firstNameRef = useRef();
+    const lastNameRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
     const password_confirmRef = useRef();
@@ -52,33 +52,27 @@ function Register() {
     const SignUp = async () => {
         setErrors(SignUpFormValidation(values));
         let newUser = {
-            username: usernameRef.current.value,
+            firstName: firstNameRef.current.value,
+            lastName: lastNameRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
             password_confirm: password_confirmRef.current.value,
         }
-
-        await axiosInstance.post('/auth/register', newUser)
-            .then(res => {
-                //console.log(newUser);
-                //dispatch(setSignUp(newUser));
-                setAlert('Your Account has been created successfully !!!')
-                setOpen(true);
-                setToast(true);
+        try {
+            if (values.firstName !== '' && values.lastName !== '' && values.email !== '' && values.password !== '' && values.password_confirm !== '') {
+                await axiosInstance.post('/auth/register', newUser);
                 setValues({
-                    username: '',
+                    firstName: '',
+                    lastName: '',
                     email: '',
                     password: '',
                     password_confirm: ''
                 })
-
-
-            })
-            .catch((error) => {
-                setToast(false)
-                setAlert(error.response.data);
-                setOpen(true);
-            });
+                history.push('/login')
+            }
+        } catch (err) {
+            console.log(err)
+        }
 
     }
 
@@ -99,7 +93,7 @@ function Register() {
 
             <RegisterContainer>
                 <LogoContainer>
-                    <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" />
+                    <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" alt='' />
                 </LogoContainer>
                 <TextContainer>
                     <span>Sign up to see photos and videos from your friends.</span>
@@ -107,7 +101,7 @@ function Register() {
                 <BtnContainer>
                     <FacebookBtn>
                         <FacebookLogo>
-                            <img src="/images/facebook-logo.png" />
+                            <img src="/images/facebook-logo.png" alt='' />
                         </FacebookLogo>
                         <TextBtn>
                             <span>Log in with Facebook</span>
@@ -116,7 +110,7 @@ function Register() {
                     </FacebookBtn>
                     <GoogleBtn>
                         <GoogleLogo>
-                            <img src="/images/google-logo.png " />
+                            <img src="/images/google-logo.png " alt='' />
                         </GoogleLogo>
                         <TextBtnItem>
                             <span>Log in with Google</span>
@@ -130,12 +124,13 @@ function Register() {
                 </Divider>
                 <InputContainer>
 
-
-
-
                     <InputCon>
-                        <UsernameInput ref={usernameRef} name="username" value={values.username} onChange={handlechange} placeholder="Full Name" type="text" />
-                        {errors.username && <Errors><span>{errors.username}</span></Errors>}
+                        <FirstNameInput ref={firstNameRef} name="firstName" value={values.firstName} onChange={handlechange} placeholder="FirstName" type="text" />
+                        {errors.firstName && <Errors><span>{errors.firstName}</span></Errors>}
+                    </InputCon>
+                    <InputCon>
+                        <LastNameInput ref={lastNameRef} name="lastName" value={values.lastName} onChange={handlechange} placeholder="LastName" type="text" />
+                        {errors.lastName && <Errors><span>{errors.lastName}</span></Errors>}
                     </InputCon>
                     <InputCon>
                         <EmailInput ref={emailRef} name="email" value={values.email} onChange={handlechange} placeholder="Email" type="email" />
@@ -149,7 +144,7 @@ function Register() {
                         <PasswordConfirmInput ref={password_confirmRef} name="password_confirm" value={values.password_confirm} onChange={handlechange} placeholder="Password Confirm" type="password" />
                         {errors.password_confirm && <Errors><span>{errors.password_confirm}</span></Errors>}
                     </InputCon>
-                    <SignUpBtn >
+                    <SignUpBtn onClick={SignUp} >
                         <span>Sign up</span>
                     </SignUpBtn>
 
@@ -265,7 +260,7 @@ justify-content:center;
 flex-direction:column;
 margin-bottom:20px;
 `
-const UsernameInput = styled.input`
+const FirstNameInput = styled.input`
 padding:0 10px;
 margin-bottom:10px;
 width:100%;
@@ -277,13 +272,12 @@ border:1px solid #d9d9d9;
 :focus{
    border:1px solid #666666;
 }
-// :focus-within{
-//     box-shadow:0 0 0 3px red;
-// }
+
 `
-const EmailInput = styled(UsernameInput)``
-const PasswordInput = styled(UsernameInput)``
-const PasswordConfirmInput = styled(UsernameInput)``
+const LastNameInput = styled(FirstNameInput)``
+const EmailInput = styled(FirstNameInput)``
+const PasswordInput = styled(FirstNameInput)``
+const PasswordConfirmInput = styled(FirstNameInput)``
 const SignUpBtn = styled.div`
 width:80%;
 height:40px;

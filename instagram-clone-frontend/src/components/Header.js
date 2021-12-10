@@ -1,23 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import NearMeOutlinedIcon from '@material-ui/icons/NearMeOutlined';
 import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
-
-
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+//import axiosInstance from '../axios';
 
 
 function Header() {
-    const history = useHistory()
+    //const history = useHistory()
+    const { user } = useContext(AuthContext)
 
-    const SignOut = () => {
-
-        localStorage.removeItem('user')
-
-        history.push('/login')
+    const SignOut = (e) => {
+        e.preventDefault()
+        localStorage.removeItem('user_login')
+        //history.push('/login')
 
     }
     return (
@@ -45,11 +46,20 @@ function Header() {
                     </label>
 
                 </MenuIcon>
-                <UserImg >
-                    <img src="/images/my-image.jpg" alt="" />
-                </UserImg>
+                <Link to={`/profile/${user.fullName}`}>
+                    <UserImg >
+                        <img src={user.profileImg || '/images/person/noProfile.png'} alt="" />
+                    </UserImg>
+                </Link>
 
             </MenuIconContainer>
+
+            <LogoutBtn onClick={SignOut}>
+                <Txt>Logout</Txt>
+                <LogoutIC>
+                    <ExitToAppIcon fontSize="small" />
+                </LogoutIC>
+            </LogoutBtn>
 
 
         </Container>
@@ -104,9 +114,16 @@ display:flex;
 align-items:center;
 img{
     border-radius:50%;
-    width:27px;
-    height:27px;
-    border:2px solid #000;
+    width:35px;
+    height:35px;
+    border:1px solid #000;
 }
 `
+const LogoutBtn = styled.div`
+display:flex;
+align-items:center;
+cursor:pointer;
+`
+const Txt = styled.div``
+const LogoutIC = styled.div``
 

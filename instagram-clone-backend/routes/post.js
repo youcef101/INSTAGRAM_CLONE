@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
 
 //create post 
 router.route('/add').post(upload, async (req, res) => {
-    console.log(req.file)
+    //console.log(req.file)
     const url = req.protocol + "://" + req.get('host') + "/public/uploads/"
     try {
         let newPost = {
@@ -54,6 +54,16 @@ router.get('/:id/user/info', async (req, res) => {
 
     } catch (err) {
         res.status(500).send(err);
+    }
+})
+
+//get user posts
+router.get('/:userId/all', async (req, res) => {
+    try {
+        const result = await Post.find({ userId: req.params.userId })
+        res.status(200).send(result)
+    } catch (err) {
+        console.log(err)
     }
 })
 

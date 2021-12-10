@@ -1,22 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function MyPosts() {
+function MyPosts({ currentUserPosts }) {
     return (
         <Container>
             <PostsContainer>
                 <WrapContainer>
-                    <Wrap>
-                        <img src="/images/my-image.jpg" />
+                    {currentUserPosts &&
+                        currentUserPosts.map(post =>
+                            <Wrap key={Math.random()}>
+                                <img src={post.postImg} alt='' />
 
-                    </Wrap>
-                    <Wrap>
-                        <img src="/images/my-image.jpg" />
-                    </Wrap>
-                    <Wrap>
-                        <img src="/images/my-image.jpg" />
-                    </Wrap>
-
+                            </Wrap>
+                        )}
                 </WrapContainer>
             </PostsContainer>
 
@@ -36,23 +32,24 @@ display:flex;
 align-items:center;
 justify-content:center;
 width:80%;
-//background-color:orange;
+
 `
 const WrapContainer = styled.div`
 display:flex;
 align-items:center;
 justify-content:center;
+width:100%;
+margin-bottom:15px;
 `
 const Wrap = styled.div`
-//padding-left:15px;
 display:flex;
 align-items:center;
 flex-grow:1;
 width:25%;
 img{
     cursor:pointer;
-    width:90%;
-    height:90%;
+    width:400px;
+    height:400px;
     object-fit:cover;
 }
 

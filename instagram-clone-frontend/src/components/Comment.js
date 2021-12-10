@@ -2,26 +2,28 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import axiosInstance from '../axios'
 
-function Comment() {
+function Comment({ comment }) {
     const [userInfo, setUserInfo] = useState('')
+    //console.log(userInfo)
+    useEffect(() => {
+        const getCommentsUserInfo = async () => {
+            try {
+                const res = await axiosInstance.get(`/user/${comment.userId}`)
+                setUserInfo(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getCommentsUserInfo()
+    }, [comment.userId])
 
-    // useEffect(() => {
-
-    //     axiosInstance.get(`/user/${comment_userId}`)
-    //         .then(res => {
-
-    //             setUserInfo(res.data)
-
-    //         });
-
-    // }, [])
     return (
         <Container>
             <CommentContainer>
 
                 <Comments>
-                    <CommentOwner>ahmed</CommentOwner>
-                    <CommentBody>hello are you ok ?</CommentBody>
+                    <CommentOwner>{userInfo.fullName}</CommentOwner>
+                    <CommentBody>{comment.content}</CommentBody>
                 </Comments>
 
 

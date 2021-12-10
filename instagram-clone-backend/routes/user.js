@@ -1,6 +1,7 @@
 import express from 'express'
 import User from '../models/User.js'
 import bcrypt from 'bcrypt'
+import { upload } from '../upload.js'
 const router = express.Router();
 router.get('/', async (req, res) => {
     res.status(200).send('hello from user route !!!')
@@ -16,19 +17,28 @@ router.get('/all', async (req, res) => {
     }
 })
 //edit user info
-router.put('/:id/edit', async (req, res) => {
+
+router.put('/:id/info/edit', async (req, res) => {
+
     try {
-        if (req.body.userId === req.params.id) {
-            let user = await User.findByIdAndUpdate(req.params.id, { $set: req.body });
-            res.status(200).send(`${user.username} your info has been updated successfully !!!`);
-
-        } else {
-            res.status(400).send('You can update only your account !!!')
-        }
-
+        await User.findByIdAndUpdate(req.params.id, { $set: req.body });
+        res.status(200).send(`your account updated successfully !!!`);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send(err)
     }
+
+})
+//edit user profile photo
+router.route('/:id/photo/edit').put(upload, async (req, res) => {
+    const url = req.protocol + "://" + req.get('host') + "/public/uploads/"
+    try {
+
+        await User.findByIdAndUpdate(req.params.id, { profileImg: url + req.file.filename });
+        res.status(200).send(`your account profile photo updated successfully !!!`);
+    } catch (err) {
+        res.status(500).send(err)
+    }
+
 })
 
 //edit user password
@@ -84,7 +94,7 @@ router.post('/:id/follow', async (req, res) => {
     try {
         let user = await User.findById(req.params.id);
         let current_user = await User.findById(req.body.userId)
-        if (req.body.userId != req.params.id) {
+        if (req.body.userId !== req.params.id) {
             if (!user.followers.includes(req.body.userId)) {
                 await user.updateOne({ $push: { followers: req.body.userId } });
                 await current_user.updateOne({ $push: { followings: req.params.id } });
@@ -145,10 +155,27 @@ router.get('/:id/followings', async (req, res) => {
 })
 
 //get user profile
-router.get('/:username/profile', async (req, res) => {
+router.get('/:fullName/profile', async (req, res) => {
     try {
-        let user = await User.findOne({ username: req.params.username });
+        let user = await User.findOne({ fullName: req.params.fullName });
         res.status(200).send(user)
+    } catch (err) {
+        res.status(500).send(err)
+    }
+})
+
+//get not followers and not followings users
+
+router.get('/suggestion/:userId/all', async (req, res) => {
+    try {
+
+        let all_users = await User.find()
+        //let result_final = all_users.find(user => user._id !== req.params.userId)
+        let result = all_users.filter(user => user._id != req.params.userId
+            && !user.followers.includes(req.params.userId)
+            && !user.followings.includes(req.params.userId))
+
+        res.status(200).send(result)
     } catch (err) {
         res.status(500).send(err)
     }

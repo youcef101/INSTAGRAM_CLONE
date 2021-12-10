@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import LiveTvRoundedIcon from '@material-ui/icons/LiveTvRounded';
@@ -7,57 +7,88 @@ import PermIdentityRoundedIcon from '@material-ui/icons/PermIdentityRounded';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import MyPosts from './MyPosts';
-import { NavLink, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Saved from './Saved';
 import axiosInstance from '../axios';
+import { AuthContext } from '../context/AuthContext';
 
 
 function Profile() {
-    const { username } = useParams()
-    const [profile, setProfile] = useState([])
+    const { user } = useContext(AuthContext)
+    const { fullName } = useParams()
+    const [profile, setProfile] = useState('')
+    const [currentUserPosts, setCurrentUserPosts] = useState('')
+
 
     useEffect(() => {
-        axiosInstance.get(`/user/${username}/profile`)
-            .then(res => {
-                console.log(res.data)
+        const getCurrentUserProfile = async () => {
+            try {
+                const res = await axiosInstance.get(`/user/${fullName}/profile`);
                 setProfile(res.data)
-            })
+                //setCurrentUser(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getCurrentUserProfile()
+    }, [fullName])
 
-    }, [])
+    const getCurrentUserPosts = async () => {
+        try {
+            const res = await axiosInstance.get(`/post/${profile._id}/all`)
+            setCurrentUserPosts(res.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        getCurrentUserPosts()
+    }, [profile._id])
+
+
+    const followersNumber = profile?.followers?.length
+    const followingsNumber = profile?.followings?.length
+    const postsNumber = currentUserPosts?.length
+
     return (
         <Container>
             <ProfileContainer>
 
                 <ProfileHeader>
                     <UserImg>
-                        <img src="/images/my-image.jpg" />
+                        <img src={profile.profileImg || '/images/person/noProfile.png'} alt='' />
                     </UserImg>
                     <UserGeneralInfo>
                         <TopInfo>
                             <UserName>
-                                <span>{profile.username}</span>
+                                <span>{profile.fullName}</span>
                             </UserName>
-                            <EditProfileBtn>
-                                <span>Modifier profile</span>
-                            </EditProfileBtn>
+                            {user.fullName === fullName ?
+                                <EditProfileBtn>
+                                    <Link to={`/${profile._id}/edit`}>
+                                        <span>Modifier profile</span>
+                                    </Link>
+                                </EditProfileBtn>
+                                : null
+                            }
                         </TopInfo>
                         <BottomInfo>
                             <Publication>
                                 <span>
-                                    <b>2</b> publications
+                                    <b>{postsNumber}</b> publications
                                 </span>
                             </Publication>
                             <Abonnee>
                                 <a href="#">
                                     <span>
-                                        <b>{profile.followers}</b> abonnés
+                                        <b>{followersNumber}</b> abonnés
                                     </span>
                                 </a>
                             </Abonnee>
                             <Abonnement>
                                 <a href="#">
                                     <span>
-                                        <b>{profile.followings}</b> abonnement
+                                        <b>{followingsNumber}</b> abonnement
                                     </span>
                                 </a>
                             </Abonnement>
@@ -118,7 +149,7 @@ function Profile() {
 
 
                     <TabContainer>
-                        <MyPosts />
+                        <MyPosts currentUserPosts={currentUserPosts} />
                     </TabContainer>
                     <TabContainer>
                         <Saved />
@@ -173,6 +204,9 @@ const UserName = styled.div`
 }
                 `
 const EditProfileBtn = styled.div`
+a{
+    text-decoration:none;
+}
 display:flex;
 justify-content:center;
                 cursor:pointer;
@@ -185,6 +219,7 @@ justify-content:center;
                 span{
                     font-weight:700;
                 font-size:14px;
+                color: #262626
 }
 
                 `

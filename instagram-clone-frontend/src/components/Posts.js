@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import MoreHorizOutlinedIcon from '@material-ui/icons/MoreHorizOutlined';
 import "slick-carousel/slick/slick.css";
@@ -11,52 +11,67 @@ import BookmarkBorderOutlinedIcon from '@material-ui/icons/BookmarkBorderOutline
 import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
 import axiosInstance from '../axios';
 import Comment from './Comment'
+import { AuthContext } from '../context/AuthContext';
+import { NavLink } from 'react-router-dom';
 
 
 
-function Posts() {
-
-
-    const [userInfo, setUserInfo] = useState([])
+function Posts({ post }) {
+    const { user } = useContext(AuthContext)
+    const [userPostInfo, setUserPostInfo] = useState('')
     const [content, setContent] = useState('')
-    const [comment, setComment] = useState([])
+    const [comments, setComments] = useState([])
     const contentRef = useRef();
 
-    /*  const getPostComment = () => {
-         axiosInstance.get(`/comment/${postId}/all`)
-             .then(res => {
-                 setComment(res.data)
-             })
-     }
- 
-     useEffect(() => {
-         axiosInstance.get(`/user/${post_userId}`)
-             .then(res => {
- 
-                 setUserInfo(res.data)
-             })
- 
-     }, [])
-     useEffect(() => {
-         getPostComment();
-     }, [postId]) */
+    const getPostComment = async () => {
+        try {
+            const res = await axiosInstance.get(`/comment/${post._id}/all`)
+            setComments(res.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        getPostComment();
+    }, [post._id])
+
+
+    //get user post info
+    useEffect(() => {
+        const getUserPostInfo = async () => {
+            try {
+                const res = await axiosInstance.get(`/user/${post.userId}`);
+                setUserPostInfo(res.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getUserPostInfo()
+    }, [post.userId])
+
     const handlechange = (e) => {
         setContent(e.target.value);
     }
-    /* const add_comment = () => {
+
+    //add new comment
+    const add_comment = async () => {
         let newComment = {
-            userId: userId,
-            postId: postId,
+            userId: user._id,
+            postId: post._id,
             content: contentRef.current.value
         }
-        axiosInstance.post('/comment/add', newComment)
-            .then(res => {
-
-                getPostComment();
+        try {
+            if (contentRef.current.value !== '') {
+                await axiosInstance.post('/comment/add', newComment);
+                getPostComment()
                 setContent('')
 
-            })
-    } */
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     let settings = {
         dots: true,
@@ -72,12 +87,14 @@ function Posts() {
                 <PostHeader>
 
                     <UserInfos>
-                        <UserImg>
-                            <img src="/images/my-image.jpg" alt="" />
-                        </UserImg>
+                        <NavLink to={`/profile/${userPostInfo.fullName}`}>
+                            <UserImg>
+                                <img src={userPostInfo.profileImg || '/images/person/noProfile.png'} alt="" />
+                            </UserImg>
+                        </NavLink>
                         <UserInf>
-                            <UserName>youcef ben khadem</UserName>
-                            <SubName>hello my freinds</SubName>
+                            <UserName>{userPostInfo.fullName}</UserName>
+                            <SubName>{post.title}</SubName>
                         </UserInf>
                     </UserInfos>
 
@@ -88,7 +105,7 @@ function Posts() {
                 <PostBody>
                     <Carousel {...settings}>
                         <Wrap>
-                            <img src="/images/my-image.jpg" alt="" />
+                            <img src={post.postImg} alt="" />
                         </Wrap>
 
                     </Carousel>
@@ -109,9 +126,10 @@ function Posts() {
                         </SaveIc>
                     </ActionContainer>
                 </PostBody>
-
-                <Comment />
-
+                {comments &&
+                    comments.map(comment =>
+                        <Comment key={Math.random()} comment={comment} />
+                    )}
 
                 <hr />
                 <AddCommentContainer>
@@ -122,7 +140,7 @@ function Posts() {
                         <CommentInput ref={contentRef} onChange={handlechange} value={content} placeholder="Add comment..." />
 
                     </AddComment>
-                    <PublierBtn><a href="#">Publier</a></PublierBtn>
+                    <PublierBtn onClick={add_comment}>Publier</PublierBtn>
                 </AddCommentContainer>
             </PostContainer>
         </Container>
@@ -158,7 +176,7 @@ img{
     border-radius:50%;
     width:40px;
     height:40px;
-    border:3px solid #e6005c;
+    border:1px solid #e6005c;
 }
 `
 const UserInf = styled.div`
@@ -268,9 +286,8 @@ overflow:auto;
 `
 const PublierBtn = styled.div`
 padding-right:15px;
-a{
-    text-decoration:none;
-    font-weight:500;
-}
+cursor:pointer;
+font-weight:500;
+
 `
 

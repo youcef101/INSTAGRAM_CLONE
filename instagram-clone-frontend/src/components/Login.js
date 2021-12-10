@@ -1,26 +1,28 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
-import { Link, useHistory } from 'react-router-dom';
-import axiosInstance from '../axios'
+import { Link } from 'react-router-dom';
+//import axiosInstance from '../axios'
 import { useRef } from 'react';
 import { useState } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import SignInValidation from '../FormValidation/SignInValidation';
-
-import { encryptData } from '../Utils';
-import { useEffect } from 'react';
+import { apiLogin } from '../apiCalls';
+//import { encryptData } from '../Utils';
+//import { useEffect } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 
 function Login() {
-    const history = useHistory()
+    const { dispatch } = useContext(AuthContext)
+    //const history = useHistory()
     const emailRef = useRef();
     const passwordRef = useRef();
     const [values, setValues] = useState({
         email: "",
         password: ""
     })
-    const [alert, setAlert] = useState('');
+    //const [alert, setAlert] = useState('');
     const [toast, setToast] = useState(false)
     const [open, setOpen] = useState(false)
     const [errors, setErrors] = useState({})
@@ -45,37 +47,17 @@ function Login() {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
-    const SignIn = () => {
+    const SignIn = (e) => {
+        e.preventDefault()
         setErrors(SignInValidation(values));
         let user = {
             email: emailRef.current.value,
             password: passwordRef.current.value
         }
-        const salt = process.env.SALT || '6d090796-ecdf-11ea-adc1-0242ac120003';
-        const encryptedData = encryptData(user, salt);
+        apiLogin(user, dispatch)
+        // const salt = process.env.SALT || '6d090796-ecdf-11ea-adc1-0242ac120003';
+        // const encryptedData = encryptData(user, salt);
 
-        axiosInstance.post('/auth/login', user)
-            .then(res => {
-
-                localStorage.setItem('user', encryptedData);
-                //dispatch(setSignIn(user));
-                //dispatch(setAuth(true))
-                setValues({
-                    email: "",
-                    password: ""
-                })
-                setAlert(res.data);
-                setToast(true)
-                setOpen(true)
-                history.push('/');
-
-            })
-            .catch(err => {
-                console.log(err.response.data)
-                setAlert(err.response.data);
-                setToast(false);
-                setOpen(true)
-            })
 
 
 
@@ -116,7 +98,7 @@ function Login() {
                 </Divider>
                 <SignInBtn >
                     <GoogleLogo>
-                        <img src="/images/google-logo.png" />
+                        <img src="/images/google-logo.png" alt='' />
                     </GoogleLogo>
                     <TextItem>Sign in with google</TextItem>
                 </SignInBtn>

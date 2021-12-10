@@ -6,19 +6,24 @@ const initial_state = {
     isFetching: false,
     errors: false
 }
+
 export const AuthContext = createContext(initial_state)
 export const AuthContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AuthReducers, initial_state)
+
     useEffect(() => {
         localStorage.setItem('user_login', JSON.stringify(state.user))
-    }, [])
+    }, [state.user])
+
 
     return (
         <AuthContext.Provider value={{
             user: state.user,
             isFetching: state.isFetching,
             errors: state.errors,
-            dispatch
+            dispatch,
+
+
         }}>
             {children}
         </AuthContext.Provider>

@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import './App.css';
-import Header from './components/Header';
+//import Header from './components/Header';
 import Home from './components/Home';
 import Register from './components/Register'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import Login from './components/Login';
-import { decryptData } from './Utils';
-import axiosInstance from './axios'
+//import { decryptData } from './Utils';
+//import axiosInstance from './axios'
 import Profile from './components/Profile';
 import MyPosts from './components/MyPosts';
 import Saved from './components/Saved';
+import { AuthContext } from './context/AuthContext';
+import EditUser from './components/EditUser';
 
 function App() {
-
+  const { user } = useContext(AuthContext)
 
 
 
@@ -34,30 +36,29 @@ function App() {
     <div className="App">
 
       <Router >
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Header />
+
+
         <Switch>
-          <Route path="/register">
-            <Register />
+          <Route exact path="/">
+            {user ? <Home /> : <Register />}
           </Route>
-          <Route path="/profile/my-posts">
-            <MyPosts />
+          <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
+          <Route path="/register">
+            {user ? <Redirect to="/" /> : <Register />}
+          </Route>
+
+          <Route path="/profile/:fullName">
+            <Profile />
+          </Route>
+          <Route path="/:userId/edit">
+            <EditUser />
           </Route>
           <Route path="/profile/saved">
             <Saved />
           </Route>
-          <Route path="/:username/profile">
-            <Profile />
-          </Route>
-
-          <Route path="/">
-            <Home />
-          </Route>
+          {/* <Route path="/profile/my-posts">
+            <MyPosts />
+          </Route> */}
 
         </Switch>
 

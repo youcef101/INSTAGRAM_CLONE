@@ -8,33 +8,31 @@ router.get('/', async (req, res) => {
 
 //register
 router.post('/register', async (req, res) => {
+
+    let salt = await bcrypt.genSalt(10);
+    let hash_password = await bcrypt.hash(req.body.password, salt);
+    let newUser = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: hash_password,
+        password_confirm: req.body.password_confirm,
+        fullName: req.body.firstName + ' ' + req.body.lastName
+    }
+    let email = await User.findOne({ email: req.body.email });
+
+    if (newUser.password.length < 8) {
+        res.status(400).send('password must have at least 8 caracters !!!')
+    }
+    else if (req.body.password !== req.body.password_confirm) {
+        res.status(400).send('password didn\'t match !!!')
+    }
+    else if (email) {
+        res.status(400).send('you already have an account with this email !!!')
+    }
     try {
-        let salt = await bcrypt.genSalt(10);
-        let hash_password = await bcrypt.hash(req.body.password, salt);
-        let newUser = {
-            username: req.body.username,
-            email: req.body.email,
-            password: hash_password,
-            password_confirm: req.body.password_confirm
-        }
-        let password = req.body.password;
-        let password_confirm = req.body.password_confirm
-        let username = await User.findOne({ username: req.body.username });
-        let email = await User.findOne({ email: req.body.email });
-        if (password.length < 8) {
-            res.status(400).send('password must contain minimum 8 caracter !!!')
-        } else if (password != password_confirm) {
-            res.status(400).send('password didnt match !!!')
-        } else if (username) {
-            res.status(400).send('username already exists !!!')
-        } else if (email) {
-            res.status(400).send('you already have an account with this email !!!')
-        } else {
-            await User.create(newUser);
-            res.status(201).send('your account has been created successfully !!!')
-        }
-
-
+        await User.create(newUser)
+        res.status(200).send('Account created successfully !!!')
     } catch (err) {
         res.status(500).send(err)
     }
@@ -47,7 +45,7 @@ router.post('/login', async (req, res) => {
         if (user) {
             let password = await bcrypt.compare(req.body.password, user.password);
             if (password) {
-                res.status(200).send(`Hello ${user.username} !!!`)
+                res.status(200).send(user)
             } else {
                 res.status(400).send('password didnt match !!!')
             }

@@ -1,10 +1,13 @@
-import React from 'react'
+
 
 function SignUpFormValidation(values) {
     let errors = {};
     const passwordRegex = /(?=.*[0-9])/;
-    if (!values.username) {
-        errors.username = "Username is required .";
+    if (!values.firstName) {
+        errors.firstName = "firstname is required .";
+    }
+    if (!values.lastName) {
+        errors.lastName = "lastname is required .";
     }
     if (!values.email) {
         errors.email = "Email is required .";
@@ -21,7 +24,7 @@ function SignUpFormValidation(values) {
     }
     if (!values.password_confirm) {
         errors.password_confirm = "Password Confirmation is required .";
-    } else if (values.password != values.password_confirm) {
+    } else if (values.password !== values.password_confirm) {
         errors.password_confirm = "Password didnt match ."
     }
 

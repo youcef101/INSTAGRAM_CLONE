@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { useRef } from 'react';
+//import { useRef } from 'react';
 import axiosInstance from '../axios';
+import { AuthContext } from '../context/AuthContext';
+import { NavLink } from 'react-router-dom';
 
 
-function AddPosts() {
+function AddPosts({ getTimlinePosts }) {
+    const { user } = useContext(AuthContext)
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState({
         title: '',
@@ -13,7 +16,7 @@ function AddPosts() {
         postImg: '',
 
     })
-    console.log(values)
+
     const toggleOpen = () => {
         setOpen(true)
     }
@@ -33,27 +36,30 @@ function AddPosts() {
         setValues({ ...values, postImg: e.target.files[0] });
     }
 
-    const addPost = () => {
+    const addPost = async () => {
 
         const formData = new FormData();
-        //formData.append('userId', userId);
+        formData.append('userId', user._id);
         formData.append('title', values.title);
         formData.append('desc', values.desc);
         formData.append('file', values.postImg);
-
-        axiosInstance.post('/post/add', formData)
-            .then(res => {
-                console.log(res);
-                setOpen(false)
-            })
+        try {
+            await axiosInstance.post('/post/add', formData);
+            setOpen(false)
+            getTimlinePosts()
+        } catch (err) {
+            console.log(err)
+        }
     }
     return (
         <Container>
             <AddPostContainer>
                 <PostContainer>
-                    <UserImg>
-                        <img src="/images/my-image.jpg" />
-                    </UserImg>
+                    <NavLink to={`/profile/${user.fullName}`}>
+                        <UserImg>
+                            <img src={user.profileImg || '/images/person/noProfile.png'} alt='' />
+                        </UserImg>
+                    </NavLink>
                     <AddPost onClick={toggleOpen}>
                         {open === true ?
                             <ModalContainer isOpen={toggleClose} >
@@ -76,7 +82,7 @@ function AddPosts() {
                                     </ModalPostBody>
                                     <ModalPostFooter>
                                         <CloseBtn onClick={toggleClose}>Close</CloseBtn>
-                                        <SubmitBtn >Add Post</SubmitBtn>
+                                        <SubmitBtn onClick={addPost} >Add Post</SubmitBtn>
                                     </ModalPostFooter>
                                 </form>
                             </ModalContainer>
@@ -114,7 +120,7 @@ img{
     border-radius:50%;
     width:50px;
     height:50px;
-    border:3px solid #e6005c;
+    border:1px solid #e6005c;
 }
 `
 const AddPost = styled.div`
@@ -180,8 +186,6 @@ cursor:pointer;
  text-transform:uppercase;
 }
  `
-const FileInput = styled.input`
-display:none;
-`
+
 
 

@@ -3,7 +3,7 @@ import Post from '../models/Post.js'
 import User from '../models/User.js'
 import { upload } from '../upload.js'
 const router = express.Router();
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('hello from post route !!!')
 })
 

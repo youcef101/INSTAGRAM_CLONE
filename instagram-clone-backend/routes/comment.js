@@ -2,7 +2,7 @@ import express from 'express'
 import Comment from '../models/Comment.js'
 import Post from '../models/Post.js';
 const router = express.Router();
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('hello from comment route !!!')
 })
 router.post('/add', async (req, res) => {

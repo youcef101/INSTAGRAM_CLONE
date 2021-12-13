@@ -1,26 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import NearMeOutlinedIcon from '@material-ui/icons/NearMeOutlined';
 import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 //import axiosInstance from '../axios';
 
 
 function Header() {
-    //const history = useHistory()
-    const { user } = useContext(AuthContext)
+    const history = useHistory()
+    const { user, dispatch } = useContext(AuthContext)
 
-    const SignOut = (e) => {
-        e.preventDefault()
-        localStorage.removeItem('user_login')
-        //history.push('/login')
-
+    const SignOut = () => {
+        dispatch({ type: 'LOGOUT' });
     }
+
     return (
         <Container>
             <LogoImg>
@@ -55,10 +53,12 @@ function Header() {
             </MenuIconContainer>
 
             <LogoutBtn onClick={SignOut}>
+
                 <Txt>Logout</Txt>
                 <LogoutIC>
                     <ExitToAppIcon fontSize="small" />
                 </LogoutIC>
+
             </LogoutBtn>
 
 

@@ -2,7 +2,7 @@ import express from 'express'
 import User from '../models/User.js'
 import bcrypt from 'bcrypt'
 const router = express.Router();
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('hello from auth route !!!')
 })
 

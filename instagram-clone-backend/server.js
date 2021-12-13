@@ -25,10 +25,10 @@ mongoose.connect(connection_url, {
     useUnifiedTopology: true,
     useFindAndModify: true,
 
-});
-mongoose.connection.once('open', () => {
-    console.log('DB connected !!!')
 })
+    .then(console.log('connected to mongoDB !!!'))
+    .catch(err => console.log(err));
+
 
 //API Endpoints
 app.get('/', (req, res) => {

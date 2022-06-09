@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 //import axiosInstance from '../axios'
 import { useRef } from 'react';
 import { useState } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+//import Snackbar from '@material-ui/core/Snackbar';
+//import MuiAlert from '@material-ui/lab/Alert';
 import SignInValidation from '../FormValidation/SignInValidation';
 import { apiLogin } from '../apiCalls';
 //import { encryptData } from '../Utils';
@@ -23,8 +23,8 @@ function Login() {
         password: ""
     })
     //const [alert, setAlert] = useState('');
-    const [toast, setToast] = useState(false)
-    const [open, setOpen] = useState(false)
+    //const [toast, setToast] = useState(false)
+    //const [open, setOpen] = useState(false)
     const [errors, setErrors] = useState({})
 
 
@@ -35,17 +35,17 @@ function Login() {
             [e.target.name]: e.target.value
         })
     }
-    const handleclose = (reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    }
-
-    const Alert = (props) => {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
+    /*  const handleclose = (reason) => {
+         if (reason === 'clickaway') {
+             return;
+         }
+ 
+         setOpen(false);
+     }
+ 
+     const Alert = (props) => {
+         return <MuiAlert elevation={6} variant="filled" {...props} />;
+     } */
 
     const SignIn = (e) => {
         e.preventDefault()
@@ -64,7 +64,7 @@ function Login() {
     }
     return (
         <Container>
-            <Snackbar
+            {/*  <Snackbar
                 open={open}
                 autoHideDuration={3000}
                 onClose={handleclose}
@@ -73,7 +73,7 @@ function Login() {
                 <Alert severity={toast === false ? "error" : "success"}>
                     {alert}
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
             <LoginContainer>
                 <LogoImg>
                     <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" alt="" />

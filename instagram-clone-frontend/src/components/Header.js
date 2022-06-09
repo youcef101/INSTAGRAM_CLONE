@@ -1,23 +1,39 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import NearMeOutlinedIcon from '@material-ui/icons/NearMeOutlined';
 import FavoriteBorderRoundedIcon from '@material-ui/icons/FavoriteBorderRounded';
 import ExploreOutlinedIcon from '@material-ui/icons/ExploreOutlined';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useEffect } from 'react';
+import axiosInstance from '../axios';
 //import axiosInstance from '../axios';
 
 
 function Header() {
-    const history = useHistory()
+
     const { user, dispatch } = useContext(AuthContext)
 
     const SignOut = () => {
         dispatch({ type: 'LOGOUT' });
     }
+
+
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            try {
+                const res = await axiosInstance.get(`/user/${user._id}`)
+                localStorage.setItem('user_login', JSON.stringify(res.data))
+
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getCurrentUser();
+    }, [])
 
     return (
         <Container>

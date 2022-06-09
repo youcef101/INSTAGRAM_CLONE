@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 function MyPosts({ currentUserPosts }) {
+    const PF = 'https://instagram-clone-deploy.herokuapp.com/public/uploads/'
     return (
         <Container>
             <PostsContainer>
@@ -9,7 +10,7 @@ function MyPosts({ currentUserPosts }) {
                     {currentUserPosts &&
                         currentUserPosts.map(post =>
                             <Wrap key={Math.random()}>
-                                <img src={post.postImg} alt='' />
+                                <img src={/* PF + */ post.postImg} alt='' />
 
                             </Wrap>
                         )}

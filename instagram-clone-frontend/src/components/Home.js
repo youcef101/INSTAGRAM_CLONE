@@ -11,6 +11,7 @@ import FreindStory from './FreindStory'
 import FreindSuggestion from './FreindSuggestion'
 import Header from './Header'
 import Posts from './Posts'
+import SuggestionAccount from './SuggestionAccount'
 
 function Home() {
     const { user } = useContext(AuthContext)
@@ -64,6 +65,7 @@ function Home() {
                 : null}
             <AddPosts getTimlinePosts={getTimlinePosts} />
             <FreindStory />
+            <SuggestionAccount />
             {timeline_posts &&
                 timeline_posts.map(post =>
                     <Posts key={Math.random()} post={post} />

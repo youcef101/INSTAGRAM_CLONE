@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import axiosInstance from '../axios'
 import { AuthContext } from '../context/AuthContext'
-//import { useParams } from 'react-router-dom';
+import PublishIcon from '@material-ui/icons/Publish';
+import { getStorage, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import app from '../Firebase';
+
 function EditUser() {
-
-    //const { userId } = useParams()
+    const [edited, setIsEdited] = useState(false)
     const { user } = useContext(AuthContext)
-
+    const [file, setFile] = useState('')
     const [values, setValues] = useState({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -18,14 +20,7 @@ function EditUser() {
         phone: user.phone,
         profileImg: user.profileImg
     })
-    const firstNameRef = useRef()
-    const lastNameRef = useRef()
-    const fullNameRef = useRef()
-    const emailRef = useRef()
-    const countryRef = useRef()
-    const cityRef = useRef()
-    const phoneRef = useRef()
-    const profileImgRef = useRef()
+
 
     const handleChange = (e) => {
         setValues({
@@ -34,7 +29,7 @@ function EditUser() {
         })
     }
     const handlePhoto = (e) => {
-        console.log(e.target.files[0])
+        setFile(e.target.files[0])
         setValues({ ...values, profileImg: e.target.files[0] });
     }
 
@@ -50,69 +45,114 @@ function EditUser() {
     }
     useEffect(() => {
         getCurrentUser()
-    }, [user._id])
+    }, [user._id, edited])
+
 
     //edit user info
-    const EditInfo = async () => {
+    const EditInfo = async (e) => {
+        setIsEdited(true)
+        e.preventDefault();
+        if (file) {
+            const fileName = new Date().getTime() + file.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on('state_changed',
+                (snapshot) => {
 
-        let edited_user = {
-            firstName: firstNameRef.current.value,
-            lastName: lastNameRef.current.value,
-            fullName: fullNameRef.current.value,
-            email: emailRef.current.value,
-            country: countryRef.current.value,
-            city: cityRef.current.value,
-            phone: phoneRef.current.value,
-        }
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                        default:
+                    }
+                },
+                (error) => { },
+                () => {
 
-        try {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        const edited_user = {
+                            firstName: values.firstName,
+                            lastName: values.lastName,
+                            fullName: values.fullName,
+                            email: values.email,
+                            country: values.country,
+                            city: values.city,
+                            phone: values.phone,
+                            profileImg: downloadURL
+                        }
+                        try {
 
-            await axiosInstance.put(`/user/${user._id}/info/edit`, edited_user)
-            getCurrentUser()
+                            axiosInstance.put(`/user/${user._id}/info/edit`, edited_user)
+                                && getCurrentUser()
 
-        } catch (err) {
-            console.log(err)
+                        } catch (err) {
+                            console.log(err)
+                        }
+                    });
+                }
+            );
+        } else {
+            const edited_user = {
+                firstName: values.firstName,
+                lastName: values.lastName,
+                fullName: values.fullName,
+                email: values.email,
+                country: values.country,
+                city: values.city,
+                phone: values.phone,
+
+            }
+            try {
+
+                axiosInstance.put(`/user/${user._id}/info/edit`, edited_user)
+                    && getCurrentUser()
+
+            } catch (err) {
+                console.log(err)
+            }
+
         }
     }
 
-    //edit user photo
-    const EditPhoto = async () => {
-        const formData = new FormData();
-        formData.append('file', values.profileImg);
 
-        try {
-            await axiosInstance.put(`/user/${user._id}/photo/edit`, formData)
-            getCurrentUser()
-        } catch (err) {
-            console.log(err)
-        }
-    }
+
+
+
 
     return (
         <Container>
             <UserInfosContainer>
                 <ImgContainer>
-                    <Wrap>
-                        <img src={user.profileImg || '/images/person/noProfile.png'} alt='' />
+                    <Wrap style={{ display: 'flex', justifyContent: 'center' }}>
+                        <img src={user?.profileImg || 'https://crowd-literature.eu/wp-content/uploads/2015/01/no-avatar.gif'} alt='' />
                     </Wrap>
-                    <form encType="multipart/form-data">
-                        <SelectBtn >
-                            <EditPhotoInput ref={profileImgRef} onChange={handlePhoto} name='file' type="file" />
-                        </SelectBtn>
-                    </form>
-                    <ModifyPhoto onClick={EditPhoto}>
-                        Changer Photo
-                    </ModifyPhoto>
+                    <UploadContainer style={{ display: 'flex', justifyContent: 'center' }}>
+                        <LabelContainer htmlFor='file' style={{
+                            cursor: 'pointer',
+                            width: '100%', height: '30px', backgroundColor: 'teal', color: 'white',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            borderRadius: '5px'
+                        }}>
+                            <PublishIcon fontSize='small' />Upload</LabelContainer>
+                        <input type='file' id='file' style={{ display: 'none' }} onChange={handlePhoto} />
+                    </UploadContainer>
+
                 </ImgContainer>
                 <UserImgContainer>
                     <InfosContainer>
-                        <FirstNameInput ref={firstNameRef} name="firstName" type='text' value={values.firstName} onChange={handleChange} placeholder="Enter your firstName ..." />
-                        <LastNameInput ref={lastNameRef} name="lastName" type='text' value={values.lastName} onChange={handleChange} placeholder="Enter your lastName ..." />
-                        <FullNameInput ref={fullNameRef} name="fullName" type='text' value={values.fullName} onChange={handleChange} placeholder="Enter your fullName ..." />
-                        <EmailInput ref={emailRef} name="email" type='text' value={values.email} onChange={handleChange} placeholder="Enter your email ..." />
-                        <CountryInput ref={countryRef} name="country" type='text' value={values.country} onChange={handleChange} placeholder="Enter your country ..." />
-                        <CityInput ref={cityRef} name="city" type='text' value={values.city} onChange={handleChange} placeholder="Enter your city ..." />
-                        <PhoneInput ref={phoneRef} name="phone" type='text' value={values.phone} onChange={handleChange} placeholder="Enter your phone ..." />
+                        <FirstNameInput name="firstName" type='text' defaultValue={user?.firstName} onChange={handleChange} placeholder="Enter your firstName ..." />
+                        <LastNameInput name="lastName" type='text' defaultValue={user?.lastName} onChange={handleChange} placeholder="Enter your lastName ..." />
+                        <FullNameInput name="fullName" type='text' defaultValue={user?.fullName} onChange={handleChange} placeholder="Enter your fullName ..." />
+                        <EmailInput name="email" type='text' defaultValue={user?.email} onChange={handleChange} placeholder="Enter your email ..." />
+                        <CountryInput name="country" type='text' defaultValue={user?.country} onChange={handleChange} placeholder="Enter your country ..." />
+                        <CityInput name="city" type='text' defaultValue={user?.city} onChange={handleChange} placeholder="Enter your city ..." />
+                        <PhoneInput name="phone" type='text' defaultValue={user?.phone} onChange={handleChange} placeholder="Enter your phone ..." />
                         <EditBtn onClick={EditInfo}>Edit</EditBtn>
 
                     </InfosContainer>
@@ -181,9 +221,9 @@ cursor:pointer;
 img{
     margin-top:10px;
     //border:1px solid #000;
-    width:98%;
-    height:98%;
-    border-radius:50%
+    width:98% !important;
+    height:98% !important;
+    border-radius:50% !important;
    
 }
 `
@@ -224,32 +264,20 @@ align-items:center;
 color: #262626;
 :hover{
     background-color:#e6e6e6;
+};
+@media(max-width:540px){
+width:40%;
+}
+@media(max-width:400px){
+width:50%;
+}
+@media(max-width:350px){
+width:65%;
+
 }
 `
-const SelectBtn = styled.div`
-margin-top:30px;
-width:100%;
-
-`
-const EditPhotoInput = styled.input`
-width:90%
-`
-const ModifyPhoto = styled.div`
-
-margin-top:20px;
-width:100%;
-height:35px;
-cursor:pointer;
-border:2px solid #808080;
-background-color:#cccccc;
-border-radius:4px;
-font-size:14px;
-font-weight:700;
-display:flex;
-justify-content:center;
-align-items:center;
-color: #262626;
-:hover{
-    background-color:#e6e6e6;
-}
+const UploadContainer = styled.div``
+const LabelContainer = styled.label`
+color:gray;
+margin:5px 0px;
 `

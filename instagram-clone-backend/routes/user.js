@@ -18,28 +18,16 @@ router.get('/all', async (req, res) => {
 })
 //edit user info
 
-router.put('/:id/info/edit', async (req, res) => {
-
+router.put('/:userId/info/edit', async (req, res) => {
     try {
-        await User.findByIdAndUpdate(req.params.id, { $set: req.body });
+        await User.findByIdAndUpdate(req.params.userId, { $set: req.body });
         res.status(200).send(`your account updated successfully !!!`);
     } catch (err) {
         res.status(500).send(err)
     }
 
 })
-//edit user profile photo
-router.route('/:id/photo/edit').put(upload, async (req, res) => {
-    const url = req.protocol + "://" + req.get('host') + "/public/uploads/"
-    try {
 
-        await User.findByIdAndUpdate(req.params.id, { profileImg: url + req.file.filename });
-        res.status(200).send(`your account profile photo updated successfully !!!`);
-    } catch (err) {
-        res.status(500).send(err)
-    }
-
-})
 
 //edit user password
 router.put('/:id/password/change', async (req, res) => {

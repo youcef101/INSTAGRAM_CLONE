@@ -10,7 +10,7 @@ import { AuthContext } from '../context/AuthContext';
 function FreindStory() {
     const [followings, setFollowings] = useState([])
     const { user } = useContext(AuthContext)
-
+    const PF = "https://instagram-clone-deploy.herokuapp.com/public/uploads/"
     useEffect(() => {
         const getFollowings = async () => {
             try {
@@ -33,12 +33,12 @@ function FreindStory() {
                         <UserContainer key={Math.random()} >
                             <NavLink to={`/profile/${following?.fullName}`}>
                                 <UserImg>
-                                    <img src={following?.profileImg || '/images/person/noProfile.png'} alt="" />
+                                    <img src={/* PF + */ following?.profileImg || '/images/person/noProfile.png'} alt="" />
                                 </UserImg>
                             </NavLink>
-                            <UserName>
+                            {/*  <UserName>
                                 <span>{following?.fullName}</span>
-                            </UserName>
+                            </UserName> */}
                         </UserContainer>
                     )}
 

@@ -13,7 +13,7 @@ import { upload } from './upload.js'
 dotenv.config();
 //app config
 const app = express();
-const port = process.env.PORT
+const port = process.env.PORT || 8001
 //Middlewares
 app.use(express.json());
 app.use(Cors());
@@ -43,6 +43,9 @@ app.use('/api/post', postRouter);
 //public image for upload
 app.use('/public', express.static('public'));
 
+app.post('/api/upload', upload, (req, res) => {
+    res.status(200).send('file upload')
+})
 //Listener
 app.listen(port, () => {
     console.log(`listening on localhost:${port}`);

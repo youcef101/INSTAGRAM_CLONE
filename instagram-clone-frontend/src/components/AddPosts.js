@@ -5,9 +5,12 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import axiosInstance from '../axios';
 import { AuthContext } from '../context/AuthContext';
 import { NavLink } from 'react-router-dom';
+import { getStorage, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import app from '../Firebase';
 
 
 function AddPosts({ getTimlinePosts }) {
+    const PF = 'https://instagram-clone-deploy.herokuapp.com/public/uploads/'
     const { user } = useContext(AuthContext)
     const [open, setOpen] = useState(false);
     const [values, setValues] = useState({
@@ -32,32 +35,77 @@ function AddPosts({ getTimlinePosts }) {
     }
 
     const handlePhoto = (e) => {
-        console.log(e.target.files[0])
         setValues({ ...values, postImg: e.target.files[0] });
     }
 
-    const addPost = async () => {
+    const addPost = async (e) => {
+        e.preventDefault();
+        if (values?.postImg) {
+            const fileName = new Date().getTime() + values.postImg.name;
+            const storage = getStorage(app);
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, values.postImg);
+            uploadTask.on('state_changed',
+                (snapshot) => {
 
-        const formData = new FormData();
-        formData.append('userId', user._id);
-        formData.append('title', values.title);
-        formData.append('desc', values.desc);
-        formData.append('file', values.postImg);
-        try {
-            await axiosInstance.post('/post/add', formData);
-            setOpen(false)
-            getTimlinePosts()
-        } catch (err) {
-            console.log(err)
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                        default:
+                    }
+                },
+                (error) => { },
+                () => {
+
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        const newPost = {
+                            userId: user._id,
+                            title: values.title,
+                            desc: values.desc,
+                            postImg: downloadURL
+                        }
+                        try {
+                            axiosInstance.post('/post/add', newPost);
+                            setOpen(false)
+                            getTimlinePosts()
+                        } catch (err) {
+                            console.log(err)
+                        }
+                    });
+                }
+            );
+        } else {
+            const newPost = {
+                userId: user._id,
+                title: values.title,
+                desc: values.desc,
+
+            }
+            try {
+                await axiosInstance.post('/post/add', newPost);
+                setOpen(false)
+                getTimlinePosts()
+            } catch (err) {
+                console.log(err)
+            }
+
         }
+
     }
+    //console.log(user)
     return (
         <Container>
             <AddPostContainer>
                 <PostContainer>
                     <NavLink to={`/profile/${user.fullName}`}>
                         <UserImg>
-                            <img src={user.profileImg || '/images/person/noProfile.png'} alt='' />
+                            <img src={user?.profileImg || '/images/person/noProfile.png'} alt='' />
                         </UserImg>
                     </NavLink>
                     <AddPost onClick={toggleOpen}>

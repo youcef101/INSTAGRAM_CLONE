@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 //import Header from './components/Header';
 import Home from './components/Home';
 import Register from './components/Register'
-import { BrowserRouter as Router, Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import Login from './components/Login';
 //import { decryptData } from './Utils';
 //import axiosInstance from './axios'

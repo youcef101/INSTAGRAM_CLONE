@@ -14,6 +14,7 @@ import { AuthContext } from '../context/AuthContext';
 
 
 function Profile() {
+    const PF = 'https://instagram-clone-deploy.herokuapp.com/public/uploads/'
     const { user } = useContext(AuthContext)
     const { fullName } = useParams()
     const [profile, setProfile] = useState('')
@@ -56,7 +57,7 @@ function Profile() {
 
                 <ProfileHeader>
                     <UserImg>
-                        <img src={profile.profileImg || '/images/person/noProfile.png'} alt='' />
+                        <img src={/* PF +  */profile.profileImg || 'https://crowd-literature.eu/wp-content/uploads/2015/01/no-avatar.gif'} alt='' />
                     </UserImg>
                     <UserGeneralInfo>
                         <TopInfo>
@@ -79,18 +80,18 @@ function Profile() {
                                 </span>
                             </Publication>
                             <Abonnee>
-                                <a href="#">
-                                    <span>
-                                        <b>{followersNumber}</b> abonnés
-                                    </span>
-                                </a>
+
+                                <span>
+                                    <b>{followersNumber}</b> abonnés
+                                </span>
+
                             </Abonnee>
                             <Abonnement>
-                                <a href="#">
-                                    <span>
-                                        <b>{followingsNumber}</b> abonnement
-                                    </span>
-                                </a>
+
+                                <span>
+                                    <b>{followingsNumber}</b> abonnement
+                                </span>
+
                             </Abonnement>
                         </BottomInfo>
                     </UserGeneralInfo>
@@ -287,20 +288,14 @@ span{
 const Abonnee = styled.div`
                 margin-left:40px;
                 cursor:pointer;
-                a{
-                    text-decoration:none;
-                color:#262626;
-                font-size:20px;
-    
-}
+              
 @media(max-width:715px){
-a{
-    font-size:15px;
+
     span{
         display:flex;
         flex-direction:column;
     }
-}
+
 }
 @media(max-width:345px){
 margin-left:0px;

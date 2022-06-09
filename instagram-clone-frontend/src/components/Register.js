@@ -5,15 +5,15 @@ import axiosInstance from '../axios'
 import { useRef } from 'react'
 import { useState } from 'react'
 import SignUpFormValidation from '../FormValidation/SignUpFormValidation'
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+//import Snackbar from '@material-ui/core/Snackbar';
+//import MuiAlert from '@material-ui/lab/Alert';
 
 
 function Register() {
     const history = useHistory()
-    const [open, setOpen] = React.useState(false);
-    const [alert, setAlert] = useState('')
-    const [toast, setToast] = useState(false)
+    //const [open, setOpen] = React.useState(false);
+    //const [alert, setAlert] = useState('')
+    //const [toast, setToast] = useState(false)
     const [errors, setErrors] = useState({})
     const [values, setValues] = useState({
         firstName: '',
@@ -37,7 +37,7 @@ function Register() {
         });
     }
 
-    const handleclose = (reason) => {
+    /* const handleclose = (reason) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -47,7 +47,7 @@ function Register() {
 
     const Alert = (props) => {
         return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
+    } */
 
     const SignUp = async () => {
         setErrors(SignUpFormValidation(values));
@@ -80,7 +80,7 @@ function Register() {
     return (
         <Container>
 
-            <Snackbar
+            {/* <Snackbar
                 open={open}
                 autoHideDuration={3000}
                 onClose={handleclose}
@@ -89,7 +89,7 @@ function Register() {
                 <Alert severity={toast === false ? "error" : "success"}>
                     {alert}
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
 
             <RegisterContainer>
                 <LogoContainer>

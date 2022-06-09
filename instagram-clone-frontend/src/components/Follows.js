@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 
 
 function Follows({ followers, getFollowersNotFollowed }) {
-
+    const PF = "https://instagram-clone-deploy.herokuapp.com/public/uploads/"
     const { user } = useContext(AuthContext)
 
     const FollowUser = async (id) => {
@@ -29,7 +29,7 @@ function Follows({ followers, getFollowersNotFollowed }) {
                             <UserInfoContainer>
                                 <NavLink to={`/profile/${follow.fullName}`}>
                                     <UserImg>
-                                        <img src={follow.profileImg || '/images/person/noProfile.png'} alt='' />
+                                        <img src={/* PF +  */follow.profileImg || '/images/person/noProfile.png'} alt='' />
                                     </UserImg>
                                 </NavLink>
                                 <UserInfo>

@@ -9,15 +9,14 @@ router.get('/', (req, res) => {
 
 
 //create post 
-router.route('/add').post(upload, async (req, res) => {
-    //console.log(req.file)
-    const url = req.protocol + "://" + req.get('host') + "/public/uploads/"
+router.post('/add', async (req, res) => {
+
     try {
         let newPost = {
             userId: req.body.userId,
             title: req.body.title,
             desc: req.body.desc,
-            postImg: url + req.file.filename
+            postImg: req.body.postImg
         }
         await Post.create(newPost);
         res.status(201).send('your post created successfully !!!')

@@ -17,6 +17,7 @@ import { NavLink } from 'react-router-dom';
 
 
 function Posts({ post }) {
+    const PF = 'https://instagram-clone-deploy.herokuapp.com/public/uploads/'
     const { user } = useContext(AuthContext)
     const [userPostInfo, setUserPostInfo] = useState('')
     const [content, setContent] = useState('')
@@ -89,7 +90,7 @@ function Posts({ post }) {
                     <UserInfos>
                         <NavLink to={`/profile/${userPostInfo.fullName}`}>
                             <UserImg>
-                                <img src={userPostInfo.profileImg || '/images/person/noProfile.png'} alt="" />
+                                <img src={/* PF + */ userPostInfo.profileImg || '/images/person/noProfile.png'} alt="" />
                             </UserImg>
                         </NavLink>
                         <UserInf>
@@ -105,7 +106,7 @@ function Posts({ post }) {
                 <PostBody>
                     <Carousel {...settings}>
                         <Wrap>
-                            <img src={post.postImg} alt="" />
+                            <img src={/* PF +  */post.postImg} alt="" />
                         </Wrap>
 
                     </Carousel>

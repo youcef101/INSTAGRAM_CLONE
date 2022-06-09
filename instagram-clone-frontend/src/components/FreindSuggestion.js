@@ -6,6 +6,7 @@ import axiosInstance from '../axios';
 import { AuthContext } from '../context/AuthContext';
 
 function FreindSuggestion({ suggestion_users, getSuggestionUsers }) {
+    const PF = "https://instagram-clone-deploy.herokuapp.com/public/uploads/"
     const { user } = useContext(AuthContext)
     const FollowUser = async (id) => {
         const userId = user._id
@@ -27,7 +28,7 @@ function FreindSuggestion({ suggestion_users, getSuggestionUsers }) {
                             <UserInfoContainer>
                                 <NavLink to={`/profile/${suggestion.fullName}`}>
                                     <UserImg>
-                                        <img src={suggestion.profileImg || '/images/person/noProfile.png'} alt='' />
+                                        <img src={/* PF +  */suggestion.profileImg || '/images/person/noProfile.png'} alt='' />
                                     </UserImg>
                                 </NavLink>
                                 <UserInfo>
